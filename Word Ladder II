@@ -1,0 +1,62 @@
+class Solution {
+public:
+    unordered_map<string,int>mp;
+    vector<vector<string>>res;
+    string startWord;
+    void dfs(string word,  vector<string>&sq){
+        if(word==startWord){
+            reverse(sq.begin(),sq.end());
+            res.push_back(sq);
+            reverse(sq.begin(),sq.end());
+            return;
+        }
+        int step=mp[word];
+        int len=word.size();
+        for(int i=0;i<len;i++){
+            char origin=word[i];
+            for(char ch='a';ch<='z';ch++){
+                word[i]=ch;
+                if(mp.find(word)!=mp.end() && mp[word]+1==step){
+                    sq.push_back(word);
+                    dfs(word,sq);
+                    sq.pop_back();
+                }
+            }
+            word[i]=origin;
+        }
+    }
+    vector<vector<string>> findLadders(string beginWord, string endWord, vector<string>& wordList) {
+        queue<string>q;
+        q.push(beginWord);
+        unordered_set<string>s(wordList.begin(),wordList.end());
+        startWord=beginWord;
+        int len=beginWord.size();
+        mp[beginWord]=1;
+        s.erase(beginWord);
+        while(!q.empty()){
+            string word=q.front();
+            int step=mp[word];
+            q.pop();
+            if(word==endWord) 
+                break;
+            for(int i=0;i<len;i++){
+                char origin=word[i];
+                for(char ch='a';ch<='z';ch++){
+                    word[i]=ch;
+                    if(s.count(word)){
+                        q.push(word);
+                        s.erase(word);
+                        mp[word]=step+1;
+                    }
+                }
+                word[i]=origin;
+            }
+        }
+            if(mp.find(endWord)!=mp.end()){
+                vector<string>sq;
+                sq.push_back(endWord);
+                dfs(endWord,sq);
+            }
+        return res;
+    }
+};
