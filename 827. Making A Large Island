@@ -1,0 +1,141 @@
+//{ Driver Code Starts
+// Initial Template for C++
+
+#include <bits/stdc++.h>
+using namespace std;
+
+
+// } Driver Code Ends
+// User function Template for C++
+class DisjointSet {
+public: 
+    vector<int> rank, parent, size; 
+    DisjointSet(int n) {
+        rank.resize(n+1, 0); 
+        parent.resize(n+1);
+        size.resize(n+1); 
+        for(int i = 0;i<=n;i++) {
+            parent[i] = i; 
+            size[i] = 1; 
+        }
+    }
+
+    int findUPar(int node) {
+        if(node == parent[node])
+            return node; 
+        return parent[node] = findUPar(parent[node]); 
+    }
+
+    void unionByRank(int u, int v) {
+        int ulp_u = findUPar(u); 
+        int ulp_v = findUPar(v); 
+        if(ulp_u == ulp_v) return; 
+        if(rank[ulp_u] < rank[ulp_v]) {
+            parent[ulp_u] = ulp_v; 
+        }
+        else if(rank[ulp_v] < rank[ulp_u]) {
+            parent[ulp_v] = ulp_u; 
+        }
+        else {
+            parent[ulp_v] = ulp_u; 
+            rank[ulp_u]++; 
+        }
+    }
+
+    void unionBySize(int u, int v) {
+        int ulp_u = findUPar(u); 
+        int ulp_v = findUPar(v); 
+        if(ulp_u == ulp_v) return; 
+        if(size[ulp_u] < size[ulp_v]) {
+            parent[ulp_u] = ulp_v; 
+            size[ulp_v] += size[ulp_u]; 
+        }
+        else {
+            parent[ulp_v] = ulp_u;
+            size[ulp_u] += size[ulp_v]; 
+        }
+    }
+};
+class Solution {
+  public:
+    int MaxConnection(vector<vector<int>>& grid) {
+        // code here
+        int n=grid.size();
+        int count=0;
+        DisjointSet ds(n*n);
+        
+        for(int i=0;i<n;i++){
+            for(int j=0;j<n;j++){
+                if(grid[i][j]==0) 
+                    continue;
+                int dr[]={-1,0,1,0};
+                int dc[]={0,-1,0,1};
+                for(int k=0;k<4;k++){
+                    int nRow=i+dr[k];
+                    int nCol=j+dc[k];
+                    if(nRow>=0 && nRow<n && nCol>=0 && nCol<n){
+                        if(grid[nRow][nCol]==1){
+                            int nodeNo=i*n+j;
+                            int adjNodeNo= nRow*n+nCol;
+                            ds.unionBySize(nodeNo,adjNodeNo);
+                        }
+                    }
+                }
+            }
+        }
+        
+        for(int i=0;i<n;i++){
+            for(int j=0;j<n;j++){
+                if(grid[i][j]==1)
+                    continue;
+                set<int>comp;
+                int dr[]={-1,0,1,0};
+                int dc[]={0,-1,0,1};
+                for(int k=0;k<4;k++){
+                    int nRow=i+dr[k];
+                    int nCol=j+dc[k];
+                    if(nRow>=0 && nRow<n && nCol>=0 && nCol<n){
+                        if(grid[nRow][nCol]==1){
+                            int nodeNo=nRow*n+nCol;
+                            comp.insert(ds.findUPar(nodeNo));
+                        }
+                    }
+                }
+                int total_size=0;
+                for(auto it: comp){
+                    total_size+=ds.size[it];
+                }
+                count=max(count,total_size+1);
+            }
+        }
+        
+        for(int c=0;c<n*n;c++){
+            count=max(count,ds.size[ds.findUPar(c)]);
+        }
+        return count;
+    }
+};
+
+
+//{ Driver Code Starts.
+int main() {
+
+    int t;
+    cin >> t;
+    while (t--) {
+        int n;
+        cin >> n;
+        vector<vector<int>> grid(n, vector<int>(n));
+
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                cin >> grid[i][j];
+            }
+        }
+
+        Solution obj;
+        cout<<obj.MaxConnection(grid)<<"\n";
+    }
+}
+
+// } Driver Code Ends
