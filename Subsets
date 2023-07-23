@@ -1,0 +1,19 @@
+class Solution {
+public:
+    int n;
+    void subsetprint(int ind, vector<vector<int>> &ans, vector<int> &temp, vector<int>& nums) {
+        ans.push_back(temp);
+        for(int i=ind;i<n;i++){
+            temp.push_back(nums[i]);
+            subsetprint(i+1,ans,temp,nums);
+            temp.pop_back();
+        }
+    }
+    vector<vector<int>> subsets(vector<int>& nums) {
+        vector<vector<int>> ans;
+        vector<int> temp;
+        n = nums.size();
+        subsetprint(0,ans,temp,nums);
+        return ans;
+    }
+};
