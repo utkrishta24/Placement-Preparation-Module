@@ -1,0 +1,16 @@
+class Solution {
+public:
+    long long beautifulSubarrays(vector<int>& nums) {
+        long long count=0, xorr=0;
+        map<long long, long long>mp;
+        mp[0]++;
+        for(int i=0;i<nums.size();i++){
+            xorr=xorr^nums[i];
+            if(mp[xorr]){
+                count+=mp[xorr];
+            }
+            mp[xorr]++;
+        }
+        return count;
+    }
+};
