@@ -1,0 +1,23 @@
+class Solution {
+    void myfunc(int ind, vector<int> &candidates, int target, vector<vector<int>> &combi, vector<int> &temp){
+        if(ind==candidates.size()){
+            if(target==0)
+                combi.push_back(temp);
+            return;
+        }
+        if(candidates[ind]<=target){
+            temp.push_back(candidates[ind]);
+            myfunc(ind,candidates,target-candidates[ind],combi,temp);
+            temp.pop_back();
+        }
+        myfunc(ind+1,candidates,target,combi,temp);
+    }
+public:
+
+    vector<vector<int>> combinationSum(vector<int>& candidates, int target) {
+        vector<vector<int>> combi;
+        vector<int> temp;
+        myfunc(0,candidates,target,combi,temp);
+        return combi;
+    }
+};
