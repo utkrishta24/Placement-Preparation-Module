@@ -1,0 +1,35 @@
+class Solution {
+    void myfunc(int col,int n, vector<vector<string>> &ans, vector<string> &temp, 
+        vector<int> &leftR, vector<int>&upDiag, vector<int>&lowDiag){
+        if(col==n)
+        {
+            ans.push_back(temp);
+            return;
+        }
+        for(int row=0;row<n;row++){
+            if(leftR[row]==0 && lowDiag[row+col]==0 
+                    && upDiag[n-1+col-row]==0)  {
+                temp[row][col]='Q';
+                leftR[row]=1;
+                lowDiag[row+col]=1;
+                upDiag[n-1+col-row]=1;
+                myfunc(col+1,n,ans,temp,leftR,upDiag,lowDiag);
+                temp[row][col]='.';
+                leftR[row]=0;
+                lowDiag[row+col]=0;
+                upDiag[n-1+col-row]=0;
+            }
+        }
+    }
+public:
+    vector<vector<string>> solveNQueens(int n) {
+        vector<vector<string>> ans;
+        vector<string> temp(n);
+        string s(n,'.');
+        for(int i=0;i<n;i++)
+            temp[i]=s;
+        vector<int> leftR(n,0),upDiag(2*n-1,0),lowDiag(2*n-1,0);
+        myfunc(0,n,ans,temp,leftR,upDiag,lowDiag);
+        return ans;
+    }
+};
