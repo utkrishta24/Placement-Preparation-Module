@@ -26,6 +26,7 @@ public:
                 color[node]=0;
             }
         }
+        return false;
     }
     
     
