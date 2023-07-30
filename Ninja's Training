@@ -1,0 +1,26 @@
+
+int myfunc(int day, int last, vector<vector<int>> &points,vector<vector<int>> &dp){
+    if(dp[day][last]!=-1) return dp[day][last];
+    int maxi=0;
+    if(day==0){
+        for(int i=0;i<=2;i++)
+            if(i!=last)
+                maxi=max(maxi,points[day][i]);
+        return maxi;
+    }
+    maxi=0;
+    for(int i=0;i<=2;i++){
+        if(i!=last){
+            int point=points[day][i]+myfunc(day-1, i, points,dp);
+            maxi=max(maxi,point);
+        }
+    }
+    return dp[day][last]=maxi;
+}
+
+
+int ninjaTraining(int n, vector<vector<int>> &points)
+{  
+    vector<vector<int>> dp(n,vector<int>(4,-1));
+    return myfunc(n-1,3,points,dp);
+}
