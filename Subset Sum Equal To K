@@ -1,0 +1,17 @@
+#include <bits/stdc++.h> 
+
+bool myfunc(int ind, int k, vector<int> &arr,vector<vector<int>>&dp){
+    if(k==0) return true;
+    if(ind==0) return (arr[ind]==k);
+    if(dp[ind][k]!=-1) return dp[ind][k];
+    bool noTake=myfunc(ind-1,k,arr,dp);
+    bool take=false;
+    if(k>=arr[ind])
+        take=myfunc(ind-1,k-arr[ind],arr,dp);
+    return dp[ind][k]=(noTake || take);
+}
+
+bool subsetSumToK(int n, int k, vector<int> &arr) {
+    vector<vector<int>>dp(n,vector<int>(k+1,-1));
+    return myfunc(n-1,k,arr,dp);
+}
