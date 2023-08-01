@@ -1,0 +1,33 @@
+int minSubsetSumDifference(vector<int>& arr, int n)
+{
+	// Write your code here.
+	// int n=arr.size();
+    int sum=0;
+        for(int i=0;i<n;i++)
+            sum+=arr[i];
+        vector<int>dp(sum+1,0);        
+        dp[0]=1;
+        if(arr[0]<=sum) dp[arr[0]]=1;
+        bool take,noTake;
+        for(int i=1;i<n;i++){
+            vector<int>temp(sum+1,0);
+            temp[0]=1;
+            for(int j=1;j<=sum;j++){
+                noTake=dp[j];
+                take=0;
+                if(j>=arr[i])
+                    take=dp[j-arr[i]];
+                temp[j]=(take||noTake);
+            }
+            dp=temp;
+        }
+
+        int mini=1e9;
+        for(int i=0;i<=sum;i++){
+            if(dp[i]==1){
+                int diff = abs(i - (sum - i));
+                mini=min(mini,diff);
+            }
+    }
+    return mini;
+}
